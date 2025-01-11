@@ -20,6 +20,7 @@ http://localhost:8080
 ### 🧑‍💻 **User Management**
 **Base URL:** `/api/users`
 - **GET** `/` - Retrieve user info using an email query.
+   Example: /api/users?email=john.doe@example.com
 - **POST** `/` - Register a new user and create a shopping cart.
 - **DELETE** `/{id}` - Delete user by **userId**.
 
