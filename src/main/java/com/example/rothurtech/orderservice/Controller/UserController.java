@@ -21,7 +21,7 @@ public class UserController {
         this.userServiceImpl = userServiceImpl;
         this.shoppingCartServiceImpl = shoppingCartServiceImpl;
     }
-//sad
+
     @PostMapping()
     public ResponseEntity<User> registerUser(@RequestBody User user) {
         userServiceImpl.addUser(user);
