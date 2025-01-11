@@ -6,7 +6,6 @@ import com.example.rothurtech.orderservice.Entity.User;
 
 public interface ShoppingCartService {
     ShoppingCart getShoppingCart(User user);
-    ShoppingCart addProductToShoppingCart(ShoppingCart shoppingCart, Product product);
     ShoppingCart addProductToShoppingCart(ShoppingCart shoppingCart, Product product, int quantity);
     ShoppingCart updateProductToShoppingCart(ShoppingCart shoppingCart, Product product, int quantity);
     void removeProductFromShoppingCart(ShoppingCart shoppingCart, Product product);

@@ -43,25 +43,37 @@ public class ShoppingCartServiceImpl {
         return shoppingCartRepository.save(cart);
     }
 
-    public ShoppingCart addProductToShoppingCart(Long userId, Long productId, int quantity){
+
+    public ShoppingCart addProductToShoppingCart(Long userId, String productName, int quantity){
         ShoppingCart cart = shoppingCartRepository.findByUserId(userId);
         Map<Product, Integer> products = cart.getProducts();
-        Product product = productRepository.findById(productId).orElse(null);
+        Product product = productRepository.findByName(productName);
+        products.put(product, products.getOrDefault(product, 0) + quantity);
+        cart.setProducts(products);
+        return shoppingCartRepository.save(cart);
+    }
+
+    public ShoppingCart updateProductQuatityInShoppingCart(Long userId, String productName, int quantity){
+        ShoppingCart cart = shoppingCartRepository.findByUserId(userId);
+        Map<Product, Integer> products = cart.getProducts();
+        Product product = productRepository.findByName(productName);
         products.put(product, quantity);
         cart.setProducts(products);
         return shoppingCartRepository.save(cart);
     }
 
-    public void removeProductFromShoppingCart(Long userId, Long productId){
+
+    public void removeProductFromShoppingCart(Long userId, String productName){
         ShoppingCart cart = shoppingCartRepository.findByUserId(userId);
         Map<Product, Integer> products = cart.getProducts();
-        Product product = productRepository.findById(productId).orElse(null);
+        Product product = productRepository.findByName(productName);
         products.remove(product);
         cart.setProducts(products);
         shoppingCartRepository.delete(cart);
         shoppingCartRepository.save(cart);
     }
-    void clearShoppingCart(ShoppingCart shoppingCart){
+    public void clearShoppingCart(Long userId){
+        ShoppingCart shoppingCart = shoppingCartRepository.findByUserId(userId);
         Map<Product, Integer> cart = shoppingCart.getProducts();
         cart.clear();
         shoppingCart.setProducts(cart);

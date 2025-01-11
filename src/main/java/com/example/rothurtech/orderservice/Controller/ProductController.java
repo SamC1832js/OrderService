@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/products")
@@ -31,10 +32,31 @@ public class ProductController {
         return new ResponseEntity<>(product, HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Product> deleteProduct(@PathVariable long id) {
-        productServiceImpl.deleteProduct(id);
-        return new ResponseEntity<>(productServiceImpl.getProduct(id), HttpStatus.NO_CONTENT);
+    @PutMapping
+    public ResponseEntity<Product> updateProduct(@RequestParam(value = "productname") String productName, @RequestBody Product product) {
+        Product updatedProduct = productServiceImpl.updateProduct(productName, product);
+        return new ResponseEntity<>(updatedProduct, HttpStatus.OK);
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Product> deleteProduct(@RequestParam(value = "productname") String productName) {
+        productServiceImpl.deleteProduct(productName);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PatchMapping
+    public ResponseEntity<Product> updateProduct(@RequestParam(value = "productname") String productName, @RequestBody Map<String, Object> updates ) {
+        Product updatedProduct = productServiceImpl.getProduct(productName);
+        if(updatedProduct == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        updates.forEach((key, value) -> {
+            switch (key) {
+                case "name" -> updatedProduct.setName((String) value);
+                case "description" -> updatedProduct.setDescription((String) value);
+                case "price" -> updatedProduct.setPrice(Double.parseDouble(value.toString()));
+        }});
+        return new ResponseEntity<>(productServiceImpl.updateProduct(productName, updatedProduct), HttpStatus.OK);
     }
 
 }

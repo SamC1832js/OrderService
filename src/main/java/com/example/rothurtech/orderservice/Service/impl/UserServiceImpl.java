@@ -16,8 +16,14 @@ public class UserServiceImpl {
     public User getUserById(Long id){
         return userRepository.findById(id).orElse(null);
     }
-    public User getUserByEmail(String email){
-        return userRepository.findByEmail(email);
+    public User getUserByEmail(String email, String password){
+        User user = userRepository.findByEmail(email);
+        if(user == null || !user.getPassword().equals(password)){
+            return null;
+        }else if(user.getPassword().equals(password)){
+            return user;
+        }
+        return null;
     }
     public User addUser(User user){
         return userRepository.save(user);

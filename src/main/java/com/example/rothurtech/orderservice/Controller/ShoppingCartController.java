@@ -25,21 +25,27 @@ public class ShoppingCartController {
         return new ResponseEntity<>(cart, HttpStatus.OK);
     }
 
-    @PutMapping("/{userId}/{productId}")
-    public ResponseEntity<ShoppingCart> updateShoppingCart(@PathVariable Long userId, @PathVariable Long productId) {
-        ShoppingCart cart = shoppingCartServiceImpl.addProductToShoppingCart(userId, productId);
-        return new ResponseEntity<>(cart, HttpStatus.OK);
+    @PostMapping("/{userId}")
+    public ResponseEntity<ShoppingCart> addProductToShoppingCart(@PathVariable Long userId, @RequestParam(value = "productname") String productName, @RequestParam(value = "quantity", required = false, defaultValue = "1")  Integer quantity) {
+            ShoppingCart cart = shoppingCartServiceImpl.addProductToShoppingCart(userId, productName, quantity);
+            return new ResponseEntity<>(cart, HttpStatus.OK);
     }
 
-    @PutMapping("/{userId}/{productId}/{quantity}")
-    public ResponseEntity<ShoppingCart> updateShoppingCart(@PathVariable Long userId, @PathVariable Long productId, @PathVariable Integer quantity) {
+    @PutMapping("/{userId}")
+    public ResponseEntity<ShoppingCart> updateShoppingCart(@PathVariable Long userId, @RequestParam(value = "productname") String productName, @RequestParam(value = "quantity")  Integer quantity) {
         if(quantity == 0){
-            shoppingCartServiceImpl.removeProductFromShoppingCart(userId, productId);
+            shoppingCartServiceImpl.removeProductFromShoppingCart(userId, productName);
             return new ResponseEntity<>(HttpStatus.OK);
         }else{
-            ShoppingCart cart = shoppingCartServiceImpl.addProductToShoppingCart(userId, productId, quantity);
+            ShoppingCart cart = shoppingCartServiceImpl.updateProductQuatityInShoppingCart(userId, productName, quantity);
             return new ResponseEntity<>(cart, HttpStatus.OK);
         }
+    }
+
+    @DeleteMapping("{/userId}")
+    public ResponseEntity<ShoppingCart> clearShoppingCart(@PathVariable Long userId) {
+        shoppingCartServiceImpl.clearShoppingCart(userId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 

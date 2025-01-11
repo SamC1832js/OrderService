@@ -18,17 +18,20 @@ public class ProductServiceImpl {
     public Product getProduct(Long id){
         return productRepository.findById(id).orElse(null);
     }
+    public Product getProduct(String productName){
+        return productRepository.findByName(productName);
+    }
     public List<Product> getAllProducts(){
         return productRepository.findAll();
     }
     public Product addProduct(Product product){
         return productRepository.save(product);
     }
-    public Product updateProduct(String name, Product product){
-        productRepository.deleteByName(name);
+    public Product updateProduct(String productName, Product product){
+        productRepository.deleteByName(productName);
         return productRepository.save(product);
     }
-    public void deleteProduct(Long id){
-        productRepository.deleteById(id);
+    public void deleteProduct(String productName){
+        productRepository.deleteByName(productName);
     }
 }

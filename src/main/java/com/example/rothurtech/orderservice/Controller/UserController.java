@@ -23,21 +23,21 @@ public class UserController {
     }
 
     @PostMapping()
-    public ResponseEntity<User> registerUser(@RequestBody User user) {
+    public ResponseEntity<String> registerUser(@RequestBody User user) {
         userServiceImpl.addUser(user);
         shoppingCartServiceImpl.addShoppingCart(user.getId());
-        return new ResponseEntity<>(user, HttpStatus.CREATED);
+        return new ResponseEntity<>("Document user Id for later user" + user.getId().toString(), HttpStatus.CREATED);
     }
 
     @GetMapping()
-    public ResponseEntity<User> getUser(@RequestParam String email) {
-        User user = userServiceImpl.getUserByEmail(email);
+    public ResponseEntity<User> getUser(@RequestParam(value = "email") String email, @RequestParam(value = "password") String password) {
+        User user = userServiceImpl.getUserByEmail(email, password);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<User> deleteUser(@PathVariable Long id) {
-        userServiceImpl.deleteUser(id);
+    public ResponseEntity<User> deleteUser(@RequestParam(value = "email") String email, @RequestParam(value = "password") String password) {
+        User user = userServiceImpl.getUserByEmail(email, password);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
