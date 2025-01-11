@@ -42,7 +42,7 @@ public class ShoppingCartController {
         }
     }
 
-    @DeleteMapping("{/userId}")
+    @DeleteMapping("{userId}")
     public ResponseEntity<ShoppingCart> clearShoppingCart(@PathVariable Long userId) {
         shoppingCartServiceImpl.clearShoppingCart(userId);
         return new ResponseEntity<>(HttpStatus.OK);
