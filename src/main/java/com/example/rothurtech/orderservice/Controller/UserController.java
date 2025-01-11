@@ -34,9 +34,9 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<User> deleteUser(@RequestParam(value = "email") String email, @RequestParam(value = "password") String password) {
+    public ResponseEntity<String> deleteUser(@RequestParam(value = "email") String email, @RequestParam(value = "password") String password) {
         User user = userServiceImpl.getUserByEmail(email, password);
         userServiceImpl.deleteUser(user.getId());
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>("User has been deleted.", HttpStatus.NO_CONTENT);
     }
 }

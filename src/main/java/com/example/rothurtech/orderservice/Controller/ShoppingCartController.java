@@ -37,15 +37,15 @@ public class ShoppingCartController {
     }
 
     @DeleteMapping("/{userId}")
-    public ResponseEntity<ShoppingCart> removeProductFromShoppingCart(@PathVariable Long userId, @RequestParam(value = "productname") String productName) {
+    public ResponseEntity<String> removeProductFromShoppingCart(@PathVariable Long userId, @RequestParam(value = "productname") String productName) {
         shoppingCartServiceImpl.removeProductFromShoppingCart(userId, productName);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>("Product removed from your shopping cart.", HttpStatus.OK);
     }
 
     @DeleteMapping("/{userId}/clear")
-    public ResponseEntity<ShoppingCart> clearShoppingCart(@PathVariable Long userId) {
+    public ResponseEntity<String> clearShoppingCart(@PathVariable Long userId) {
         shoppingCartServiceImpl.clearShoppingCart(userId);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>("All products removed from your shopping cart.", HttpStatus.OK);
     }
 
 

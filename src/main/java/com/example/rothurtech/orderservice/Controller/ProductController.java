@@ -37,17 +37,17 @@ public class ProductController {
         Product updatedProduct = productServiceImpl.updateProduct(productName, product);
         return new ResponseEntity<>(updatedProduct, HttpStatus.OK);
     }
-
-    @DeleteMapping
-    public ResponseEntity<Product> deleteProduct(@RequestParam(value = "productname") String productName) {
-        productServiceImpl.deleteProduct(productName);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
-
     @PatchMapping
     public ResponseEntity<Product> updateProduct(@RequestParam(value = "productname") String productName, @RequestBody Map<String, Object> updates ) {
         Product updatedProduct = productServiceImpl.updateProduct(productName, updates);
         return new ResponseEntity<>(updatedProduct, HttpStatus.OK);
     }
+
+    @DeleteMapping
+    public ResponseEntity<String> deleteProduct(@RequestParam(value = "productname") String productName) {
+        productServiceImpl.deleteProduct(productName);
+        return new ResponseEntity<>("Product deleted successfully.",HttpStatus.NO_CONTENT);
+    }
+
 
 }
