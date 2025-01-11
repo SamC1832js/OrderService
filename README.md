@@ -136,7 +136,7 @@ The default server port is `8080`.
 
 #### **DELETE** - Remove Product from Shopping Cart
 - **Description:** Remove a specific product in the user's shopping cart.
-- **URL:** `/api/shoppingcart/{userId}/remove`
+- **URL:** `/api/shoppingcart/{userId}`
 - **Query Parameters:**
   - `productname` (required)
 - **Response:** `200 OK`
