@@ -3,8 +3,8 @@ package com.example.rothurtech.orderservice.Service;
 import com.example.rothurtech.orderservice.Entity.User;
 
 public interface UserService {
-    User getUserById(Long id);
-    User getUserByEmail(String email);
-    User addUser(User user);
-    void deleteUser(Long id);
+    public User getUserById(Long id);
+    public User getUserByEmail(String email);
+    public User addUser(User user);
+    public void deleteUser(Long id);
 }

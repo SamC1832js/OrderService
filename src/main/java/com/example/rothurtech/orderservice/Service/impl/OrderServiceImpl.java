@@ -5,38 +5,47 @@ import com.example.rothurtech.orderservice.Entity.Product;
 import com.example.rothurtech.orderservice.Entity.ShoppingCart;
 import com.example.rothurtech.orderservice.Entity.User;
 import com.example.rothurtech.orderservice.Repository.OrderRepository;
+import com.example.rothurtech.orderservice.Repository.ShoppingCartRepository;
+import com.example.rothurtech.orderservice.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class OrderServiceImpl {
     private final OrderRepository orderRepository;
+    private final ShoppingCartRepository shoppingCartRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    public OrderServiceImpl(OrderRepository orderRepository) {
+    public OrderServiceImpl(OrderRepository orderRepository, ShoppingCartRepository shoppingCartRepository,UserRepository userRepository) {
         this.orderRepository = orderRepository;
+        this.shoppingCartRepository = shoppingCartRepository;
+        this.userRepository = userRepository;
+
     }
 
-    List<Order> getAllOrders(User user){
-        return orderRepository.findByUser(user);
+    public List<Order> getAllOrders(Long userId){
+        Optional<List<Order>> op = Optional.ofNullable(orderRepository.findByUserId(userId));
+        return op.orElse(new ArrayList<>());
     }
 
-    Order addOrder(ShoppingCart shoppingCart){
-        Map<Product, Integer> cart = shoppingCart.getProducts();
+
+    public Order addOrder(Long userId){
+        ShoppingCart shoppingCart = shoppingCartRepository.findByUserId(userId);
+        User user = userRepository.findById(userId).orElse(null);
+        Map<Product, Integer> products = new HashMap<>(shoppingCart.getProducts());
         Order order = new Order();
-        order.setProducts(cart);
+        order.setProducts(products);
+        order.setUser(user);
         order.setDate(LocalDateTime.now());
-        order.setTotalPrice(calculatePrice(cart));
+        order.setTotalPrice(calculatePrice(products));
         return orderRepository.save(order);
     }
 
-    Double calculatePrice(Map<Product, Integer> cart){
+    public Double calculatePrice(Map<Product, Integer> cart){
         double totalPrice = 0D;
         for (Map.Entry<Product, Integer> entry : cart.entrySet()) {
             Integer quantity = entry.getValue();
@@ -45,7 +54,7 @@ public class OrderServiceImpl {
         }
         return totalPrice;
     }
-    void deleteOrderById(Long id){
+    public void deleteOrderById(Long id){
         orderRepository.deleteById(id);
     }
 }

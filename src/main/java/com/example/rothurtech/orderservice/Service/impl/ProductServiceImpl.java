@@ -15,20 +15,20 @@ public class ProductServiceImpl {
     public ProductServiceImpl(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
-    Product getProduct(Long id){
+    public Product getProduct(Long id){
         return productRepository.findById(id).orElse(null);
     }
-    List<Product> getAllProducts(){
+    public List<Product> getAllProducts(){
         return productRepository.findAll();
     }
-    Product addProduct(Product product){
+    public Product addProduct(Product product){
         return productRepository.save(product);
     }
-    Product updateProduct(String name, Product product){
+    public Product updateProduct(String name, Product product){
         productRepository.deleteByName(name);
         return productRepository.save(product);
     }
-    void deleteProduct(Long id){
+    public void deleteProduct(Long id){
         productRepository.deleteById(id);
     }
 }

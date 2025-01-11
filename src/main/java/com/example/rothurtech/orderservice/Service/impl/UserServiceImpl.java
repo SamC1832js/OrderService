@@ -13,16 +13,16 @@ public class UserServiceImpl {
     public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
-    User getUserById(Long id){
+    public User getUserById(Long id){
         return userRepository.findById(id).orElse(null);
     }
-    User getUserByEmail(String email){
+    public User getUserByEmail(String email){
         return userRepository.findByEmail(email);
     }
-    User addUser(User user){
+    public User addUser(User user){
         return userRepository.save(user);
     }
-    void deleteUser(Long id){
+    public void deleteUser(Long id){
         userRepository.deleteById(id);
     }
 }

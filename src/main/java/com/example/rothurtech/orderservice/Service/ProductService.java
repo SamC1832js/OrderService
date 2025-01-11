@@ -5,9 +5,9 @@ import com.example.rothurtech.orderservice.Entity.Product;
 import java.util.List;
 
 public interface ProductService {
-    Product getProduct(int id);
-    List<Product> getAllProducts();
-    Product addProduct(Product product);
-    Product updateProduct(String name, Product product);
-    void deleteProduct(int id);
+    public Product getProduct(int id);
+    public List<Product> getAllProducts();
+    public Product addProduct(Product product);
+    public Product updateProduct(String name, Product product);
+    public void deleteProduct(int id);
 }
