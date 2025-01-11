@@ -44,17 +44,16 @@ http://localhost:8080
 
 ## 📌 **Future Enhancements**
 - **JWT Token-Based Authorization** for secure API access.
-- **Order History** to view past orders in detail.
-- **Product Search and Filtering** capabilities.
+- **Product Search and Filtering** 
 
 ## 🛠 **Technologies Used**
 - **Java**
 - **Spring Boot**
-- **PostgreSQL** (or any relational database)
+- **PostgreSQL**
 
 ## ⚠️ **Known Limitations**
 - No security features implemented.
-- Basic error handling.
+- No error handling.
 
 ---
 
