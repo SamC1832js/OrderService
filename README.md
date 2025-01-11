@@ -64,7 +64,6 @@ The following endpoints are available for interacting with the backend services:
 
 ## ⚠️ **Known Limitations**
 - No security implemented yet.
-- Users cannot modify or delete existing orders.
 - Basic error handling.
 
 ---
