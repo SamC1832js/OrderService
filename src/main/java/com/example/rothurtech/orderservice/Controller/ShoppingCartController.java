@@ -1,7 +1,6 @@
 package com.example.rothurtech.orderservice.Controller;
 
 import com.example.rothurtech.orderservice.Entity.ShoppingCart;
-import com.example.rothurtech.orderservice.Repository.ShoppingCartRepository;
 import com.example.rothurtech.orderservice.Service.impl.ShoppingCartServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -37,7 +36,13 @@ public class ShoppingCartController {
         return new ResponseEntity<>(cart, HttpStatus.OK);
     }
 
-    @DeleteMapping("{userId}")
+    @DeleteMapping("/{userId}/remove")
+    public ResponseEntity<ShoppingCart> removeProductFromShoppingCart(@PathVariable Long userId, @RequestParam(value = "productname") String productName) {
+        shoppingCartServiceImpl.removeProductFromShoppingCart(userId, productName);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{userId}/clear")
     public ResponseEntity<ShoppingCart> clearShoppingCart(@PathVariable Long userId) {
         shoppingCartServiceImpl.clearShoppingCart(userId);
         return new ResponseEntity<>(HttpStatus.OK);

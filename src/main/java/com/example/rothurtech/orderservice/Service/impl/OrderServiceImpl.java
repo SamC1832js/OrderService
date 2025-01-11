@@ -41,6 +41,9 @@ public class OrderServiceImpl {
         }
         User user = userRepository.findById(userId).orElse(null);
         Map<Product, Integer> products = new HashMap<>(shoppingCart.getProducts());
+        if(products.isEmpty()){
+            throw new IllegalArgumentException("No product in the shopping cart, please add products to checkout " + userId);
+        }
         Order order = new Order();
         order.setProducts(products);
         order.setUser(user);

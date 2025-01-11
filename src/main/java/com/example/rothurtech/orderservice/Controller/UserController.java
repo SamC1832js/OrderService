@@ -1,8 +1,6 @@
 package com.example.rothurtech.orderservice.Controller;
 
 import com.example.rothurtech.orderservice.Entity.User;
-import com.example.rothurtech.orderservice.Service.UserService;
-import com.example.rothurtech.orderservice.Service.impl.OrderServiceImpl;
 import com.example.rothurtech.orderservice.Service.impl.ShoppingCartServiceImpl;
 import com.example.rothurtech.orderservice.Service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +24,7 @@ public class UserController {
     public ResponseEntity<String> registerUser(@RequestBody User regUser) {
         User user = userServiceImpl.addUser(regUser);
         shoppingCartServiceImpl.addShoppingCart(user.getId());
-        return new ResponseEntity<>("Document user Id for later user" + user.getId().toString(), HttpStatus.CREATED);
+        return new ResponseEntity<>("Document user Id for later " + user.getId().toString(), HttpStatus.CREATED);
     }
 
     @GetMapping()

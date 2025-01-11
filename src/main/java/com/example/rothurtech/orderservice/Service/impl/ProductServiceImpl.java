@@ -3,8 +3,6 @@ package com.example.rothurtech.orderservice.Service.impl;
 import com.example.rothurtech.orderservice.Entity.Product;
 import com.example.rothurtech.orderservice.Repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,9 +16,6 @@ public class ProductServiceImpl {
     public ProductServiceImpl(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
-    public Product getProduct(Long id){
-        return productRepository.findById(id).orElse(null);
-    }
     public Product getProduct(String productName){
         Product product = productRepository.findByName(productName);
         if(product == null) {
@@ -31,8 +26,8 @@ public class ProductServiceImpl {
     public List<Product> getAllProducts(){
         return productRepository.findAll();
     }
-    public Product addProduct(Product product){
-        return productRepository.save(product);
+    public void addProduct(Product product){
+        productRepository.save(product);
     }
     public Product updateProduct(String productName, Product product){
         Product existingProduct = getProduct(productName);
@@ -53,6 +48,7 @@ public class ProductServiceImpl {
         return productRepository.save(existingProduct);
     }
     public void deleteProduct(String productName){
-        productRepository.deleteByName(productName);
+        Product existingProduct = getProduct(productName);
+        productRepository.delete(existingProduct);
     }
 }

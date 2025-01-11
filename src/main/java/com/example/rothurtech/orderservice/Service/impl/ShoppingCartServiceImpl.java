@@ -39,13 +39,13 @@ public class ShoppingCartServiceImpl {
         return product;
     }
 
-    public ShoppingCart addShoppingCart(Long userId){
+    public void addShoppingCart(Long userId){
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userId));
 
         ShoppingCart cart = new ShoppingCart();
         cart.setUser(user);
-        return shoppingCartRepository.save(cart);
+        shoppingCartRepository.save(cart);
     }
     public ShoppingCart addProductToShoppingCart(Long userId, Long productId){
         ShoppingCart cart = getShoppingCart(userId);
@@ -57,7 +57,6 @@ public class ShoppingCartServiceImpl {
         cart.setProducts(products);
         return shoppingCartRepository.save(cart);
     }
-
 
     public ShoppingCart addProductToShoppingCart(Long userId, String productName, int quantity){
         ShoppingCart cart = getShoppingCart(userId);
