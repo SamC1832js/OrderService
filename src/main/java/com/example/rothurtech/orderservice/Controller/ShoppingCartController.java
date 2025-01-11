@@ -36,7 +36,7 @@ public class ShoppingCartController {
         return new ResponseEntity<>(cart, HttpStatus.OK);
     }
 
-    @DeleteMapping("/{userId}/remove")
+    @DeleteMapping("/{userId}")
     public ResponseEntity<ShoppingCart> removeProductFromShoppingCart(@PathVariable Long userId, @RequestParam(value = "productname") String productName) {
         shoppingCartServiceImpl.removeProductFromShoppingCart(userId, productName);
         return new ResponseEntity<>(HttpStatus.OK);
