@@ -24,20 +24,35 @@ public class ShoppingCartServiceImpl {
         this.productRepository = productRepository;
     }
     public ShoppingCart getShoppingCart(Long userId){
-        return shoppingCartRepository.findByUserId(userId);
+        ShoppingCart cart = shoppingCartRepository.findByUserId(userId);
+        if (cart == null) {
+            throw new IllegalArgumentException("Shopping cart not found for user ID: " + userId);
+        }
+        return cart;
+    }
+
+    public Product getProduct(String productName){
+        Product product = productRepository.findByName(productName);
+        if (product == null) {
+            throw new IllegalArgumentException("Product not found for product name: " + productName);
+        }
+        return product;
     }
 
     public ShoppingCart addShoppingCart(Long userId){
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userId));
+
         ShoppingCart cart = new ShoppingCart();
-        User user = userRepository.findById(userId).orElse(null);
         cart.setUser(user);
-        shoppingCartRepository.save(cart);
-        return cart;
+        return shoppingCartRepository.save(cart);
     }
     public ShoppingCart addProductToShoppingCart(Long userId, Long productId){
-        ShoppingCart cart = shoppingCartRepository.findByUserId(userId);
+        ShoppingCart cart = getShoppingCart(userId);
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new IllegalArgumentException("Product not found with ID: " + productId));
+
         Map<Product, Integer> products = cart.getProducts();
-        Product product = productRepository.findById(productId).orElse(null);
         products.put(product, products.getOrDefault(product, 0) + 1);
         cart.setProducts(products);
         return shoppingCartRepository.save(cart);
@@ -45,37 +60,44 @@ public class ShoppingCartServiceImpl {
 
 
     public ShoppingCart addProductToShoppingCart(Long userId, String productName, int quantity){
-        ShoppingCart cart = shoppingCartRepository.findByUserId(userId);
+        ShoppingCart cart = getShoppingCart(userId);
+        Product product = getProduct(productName);
         Map<Product, Integer> products = cart.getProducts();
-        Product product = productRepository.findByName(productName);
         products.put(product, products.getOrDefault(product, 0) + quantity);
         cart.setProducts(products);
         return shoppingCartRepository.save(cart);
     }
 
     public ShoppingCart updateProductQuatityInShoppingCart(Long userId, String productName, int quantity){
-        ShoppingCart cart = shoppingCartRepository.findByUserId(userId);
+        if (quantity < 0) {
+            throw new IllegalArgumentException("Quantity cannot be negative.");
+        }
+        ShoppingCart cart = getShoppingCart(userId);
+        Product product = getProduct(productName);
         Map<Product, Integer> products = cart.getProducts();
-        Product product = productRepository.findByName(productName);
-        products.put(product, quantity);
+        if (quantity == 0) {
+            products.remove(product);
+        } else {
+            products.put(product, quantity);
+        }
         cart.setProducts(products);
         return shoppingCartRepository.save(cart);
     }
 
 
     public void removeProductFromShoppingCart(Long userId, String productName){
-        ShoppingCart cart = shoppingCartRepository.findByUserId(userId);
+        ShoppingCart cart = getShoppingCart(userId);
+        Product product = getProduct(productName);
         Map<Product, Integer> products = cart.getProducts();
-        Product product = productRepository.findByName(productName);
-        products.remove(product);
-        cart.setProducts(products);
-        shoppingCartRepository.delete(cart);
-        shoppingCartRepository.save(cart);
+        if (products.remove(product) != null) {
+            cart.setProducts(products);
+            shoppingCartRepository.save(cart);
+        }
     }
     public void clearShoppingCart(Long userId){
-        ShoppingCart shoppingCart = shoppingCartRepository.findByUserId(userId);
-        Map<Product, Integer> cart = shoppingCart.getProducts();
-        cart.clear();
-        shoppingCart.setProducts(cart);
+        ShoppingCart cart = getShoppingCart(userId);
+        cart.getProducts().clear();
+        shoppingCartRepository.save(cart);
     }
+
 }

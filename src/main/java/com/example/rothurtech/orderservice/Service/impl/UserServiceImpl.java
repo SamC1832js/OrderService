@@ -19,7 +19,7 @@ public class UserServiceImpl {
     public User getUserByEmail(String email, String password){
         User user = userRepository.findByEmail(email);
         if(user == null || !user.getPassword().equals(password)){
-            return null;
+            throw new IllegalArgumentException("Credential are incorrect");
         }else if(user.getPassword().equals(password)){
             return user;
         }

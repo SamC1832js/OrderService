@@ -18,13 +18,14 @@ public class OrderServiceImpl {
     private final OrderRepository orderRepository;
     private final ShoppingCartRepository shoppingCartRepository;
     private final UserRepository userRepository;
+    private final ShoppingCartServiceImpl shoppingCartServiceImpl;
 
     @Autowired
-    public OrderServiceImpl(OrderRepository orderRepository, ShoppingCartRepository shoppingCartRepository,UserRepository userRepository) {
+    public OrderServiceImpl(OrderRepository orderRepository, ShoppingCartRepository shoppingCartRepository,UserRepository userRepository, ShoppingCartServiceImpl shoppingCartServiceImpl) {
         this.orderRepository = orderRepository;
         this.shoppingCartRepository = shoppingCartRepository;
         this.userRepository = userRepository;
-
+        this.shoppingCartServiceImpl = shoppingCartServiceImpl;
     }
 
     public List<Order> getAllOrders(Long userId){
@@ -35,6 +36,9 @@ public class OrderServiceImpl {
 
     public Order addOrder(Long userId){
         ShoppingCart shoppingCart = shoppingCartRepository.findByUserId(userId);
+        if(shoppingCart == null){
+            throw new IllegalArgumentException("Shopping cart not found for user ID: " + userId);
+        }
         User user = userRepository.findById(userId).orElse(null);
         Map<Product, Integer> products = new HashMap<>(shoppingCart.getProducts());
         Order order = new Order();
@@ -42,6 +46,7 @@ public class OrderServiceImpl {
         order.setUser(user);
         order.setDate(LocalDateTime.now());
         order.setTotalPrice(calculatePrice(products));
+        shoppingCartServiceImpl.clearShoppingCart(userId);
         return orderRepository.save(order);
     }
 
@@ -53,8 +58,5 @@ public class OrderServiceImpl {
             totalPrice += price;
         }
         return totalPrice;
-    }
-    public void deleteOrderById(Long id){
-        orderRepository.deleteById(id);
     }
 }

@@ -46,17 +46,8 @@ public class ProductController {
 
     @PatchMapping
     public ResponseEntity<Product> updateProduct(@RequestParam(value = "productname") String productName, @RequestBody Map<String, Object> updates ) {
-        Product updatedProduct = productServiceImpl.getProduct(productName);
-        if(updatedProduct == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        updates.forEach((key, value) -> {
-            switch (key) {
-                case "name" -> updatedProduct.setName((String) value);
-                case "description" -> updatedProduct.setDescription((String) value);
-                case "price" -> updatedProduct.setPrice(Double.parseDouble(value.toString()));
-        }});
-        return new ResponseEntity<>(productServiceImpl.updateProduct(productName, updatedProduct), HttpStatus.OK);
+        Product updatedProduct = productServiceImpl.updateProduct(productName, updates);
+        return new ResponseEntity<>(updatedProduct, HttpStatus.OK);
     }
 
 }

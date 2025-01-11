@@ -23,8 +23,8 @@ public class UserController {
     }
 
     @PostMapping()
-    public ResponseEntity<String> registerUser(@RequestBody User user) {
-        userServiceImpl.addUser(user);
+    public ResponseEntity<String> registerUser(@RequestBody User regUser) {
+        User user = userServiceImpl.addUser(regUser);
         shoppingCartServiceImpl.addShoppingCart(user.getId());
         return new ResponseEntity<>("Document user Id for later user" + user.getId().toString(), HttpStatus.CREATED);
     }
@@ -38,6 +38,7 @@ public class UserController {
     @DeleteMapping("/{id}")
     public ResponseEntity<User> deleteUser(@RequestParam(value = "email") String email, @RequestParam(value = "password") String password) {
         User user = userServiceImpl.getUserByEmail(email, password);
+        userServiceImpl.deleteUser(user.getId());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

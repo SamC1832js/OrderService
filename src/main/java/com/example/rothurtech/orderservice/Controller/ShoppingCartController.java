@@ -27,19 +27,14 @@ public class ShoppingCartController {
 
     @PostMapping("/{userId}")
     public ResponseEntity<ShoppingCart> addProductToShoppingCart(@PathVariable Long userId, @RequestParam(value = "productname") String productName, @RequestParam(value = "quantity", required = false, defaultValue = "1")  Integer quantity) {
-            ShoppingCart cart = shoppingCartServiceImpl.addProductToShoppingCart(userId, productName, quantity);
-            return new ResponseEntity<>(cart, HttpStatus.OK);
+        ShoppingCart cart = shoppingCartServiceImpl.addProductToShoppingCart(userId, productName, quantity);
+        return new ResponseEntity<>(cart, HttpStatus.OK);
     }
 
     @PutMapping("/{userId}")
     public ResponseEntity<ShoppingCart> updateShoppingCart(@PathVariable Long userId, @RequestParam(value = "productname") String productName, @RequestParam(value = "quantity")  Integer quantity) {
-        if(quantity == 0){
-            shoppingCartServiceImpl.removeProductFromShoppingCart(userId, productName);
-            return new ResponseEntity<>(HttpStatus.OK);
-        }else{
-            ShoppingCart cart = shoppingCartServiceImpl.updateProductQuatityInShoppingCart(userId, productName, quantity);
-            return new ResponseEntity<>(cart, HttpStatus.OK);
-        }
+        ShoppingCart cart = shoppingCartServiceImpl.updateProductQuatityInShoppingCart(userId, productName, quantity);
+        return new ResponseEntity<>(cart, HttpStatus.OK);
     }
 
     @DeleteMapping("{userId}")
