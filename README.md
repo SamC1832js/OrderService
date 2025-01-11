@@ -134,9 +134,17 @@ The default server port is `8080`.
 - **Response:** `200 OK`
   - If quantity is `0`, the product will be removed from the cart.
 
+#### **DELETE** - Remove Product from Shopping Cart
+- **Description:** Remove a specific product in the user's shopping cart.
+- **URL:** `/api/shoppingcart/{userId}/remove`
+- **Query Parameters:**
+  - `productname` (required)
+- **Response:** `200 OK`
+
+
 #### **DELETE** - Clear Shopping Cart
 - **Description:** Clears all items from the user's shopping cart.
-- **URL:** `/api/shoppingcart/{userId}`
+- **URL:** `/api/shoppingcart/{userId}/clear`
 - **Response:** `200 OK`
 
 ---
