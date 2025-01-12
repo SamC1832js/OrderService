@@ -46,7 +46,7 @@ The default server port is `8080`.
   - `email` (required)
   - `password` (required)
 - **Response:** `204 NO CONTENT`
-
+  -   User has been deleted.
 ---
 
 ## **Product API**
@@ -106,7 +106,7 @@ The default server port is `8080`.
 - **Query Parameter:**
   - `productname` (required)
 - **Response:** `204 NO CONTENT`
-
+-   Product deleted successfully.
 ---
 
 ## **Shopping Cart API**
@@ -140,12 +140,13 @@ The default server port is `8080`.
 - **Query Parameters:**
   - `productname` (required)
 - **Response:** `200 OK`
-
+  -  Product removed from your shopping cart.
 
 #### **DELETE** - Clear Shopping Cart
 - **Description:** Clears all items from the user's shopping cart.
 - **URL:** `/api/shoppingcart/{userId}/clear`
 - **Response:** `200 OK`
+  -   All products removed from your shopping cart.
 
 ---
 
