@@ -54,7 +54,6 @@ public class ShoppingCartServiceImpl {
 
         Map<Product, Integer> products = cart.getProducts();
         products.put(product, products.getOrDefault(product, 0) + 1);
-        cart.setProducts(products);
         return shoppingCartRepository.save(cart);
     }
 
@@ -63,7 +62,6 @@ public class ShoppingCartServiceImpl {
         Product product = getProduct(productName);
         Map<Product, Integer> products = cart.getProducts();
         products.put(product, products.getOrDefault(product, 0) + quantity);
-        cart.setProducts(products);
         return shoppingCartRepository.save(cart);
     }
 
@@ -79,7 +77,6 @@ public class ShoppingCartServiceImpl {
         } else {
             products.put(product, quantity);
         }
-        cart.setProducts(products);
         return shoppingCartRepository.save(cart);
     }
 
@@ -89,8 +86,9 @@ public class ShoppingCartServiceImpl {
         Product product = getProduct(productName);
         Map<Product, Integer> products = cart.getProducts();
         if (products.remove(product) != null) {
-            cart.setProducts(products);
             shoppingCartRepository.save(cart);
+        }else{
+            throw new IllegalArgumentException("Product not found in shopping cart.");
         }
     }
     public void clearShoppingCart(Long userId){
