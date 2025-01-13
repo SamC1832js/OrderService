@@ -55,18 +55,21 @@ public class OrderServiceImpl {
         order.setProducts(products);
         order.setUser(user);
         order.setDate(LocalDateTime.now());
-        order.setTotalPrice(calculatePrice(products));
+        order.setTotalPrice(shoppingCart.getTotalPrice());
         shoppingCartServiceImpl.clearShoppingCart(userId);
         return orderMapper.toOrderDTO(orderRepository.save(order));
     }
 
-    public Double calculatePrice(Map<Product, Integer> cart){
-        double totalPrice = 0D;
-        for (Map.Entry<Product, Integer> entry : cart.entrySet()) {
-            Integer quantity = entry.getValue();
-            double price = entry.getKey().getPrice() * quantity;
-            totalPrice += price;
-        }
-        return totalPrice;
-    }
+//    public Double calculatePrice(Map<Product, Integer> cart){
+//        double totalPrice = 0D;
+//        for (Map.Entry<Product, Integer> entry : cart.entrySet()) {
+//            Integer quantity = entry.getValue();
+//            double price = entry.getKey().getPrice() * quantity;
+//            totalPrice += price;
+//        }
+//        if (totalPrice < 0 || totalPrice > Double.MAX_VALUE) {
+//            throw new IllegalArgumentException("Calculated total price is invalid: " + totalPrice);
+//        }
+//        return totalPrice;
+//    }
 }

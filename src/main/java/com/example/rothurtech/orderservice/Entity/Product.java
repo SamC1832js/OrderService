@@ -1,13 +1,13 @@
 package com.example.rothurtech.orderservice.Entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
 import lombok.*;
 
 
 //No need DTO, product can be public
-@Data
+@Data //bundles @ToString, @EqualsAndHashCode, @Getter / @Setter and @RequiredArgsConstructor
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -23,8 +23,8 @@ public class Product {
     @Column(nullable = false)
     private String description;
 
-    @Min(0)
-    @Max(Long.MAX_VALUE)
+    @DecimalMin(value = "0.0", message = "Price must be at least 0.0")
+    @DecimalMax(value = "999999999.99", message = "Price exceeds the maximum allowed")
     @Column(nullable = false)
     private Double price;
 }

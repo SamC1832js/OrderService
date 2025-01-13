@@ -1,12 +1,14 @@
 package com.example.rothurtech.orderservice.Entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Map;
-@Data
+@Data //bundles @ToString, @EqualsAndHashCode, @Getter / @Setter and @RequiredArgsConstructor
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -28,4 +30,9 @@ public class ShoppingCart {
     @MapKeyColumn(name = "product_id")
     @Column(name = "quantity")
     private Map<Product, Integer> products;
+
+    @DecimalMin(value = "0.0", message = "Total price must be at least 0.0")
+    @DecimalMax(value = "999999999.99", message = "Total price exceeds the maximum allowed")
+    @Column(name = "total_price")
+    private Double totalPrice;
 }

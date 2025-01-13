@@ -27,7 +27,7 @@ public class ShoppingCartServiceImpl {
         this.productRepository = productRepository;
         this.shoppingCartMapper = shoppingCartMapper;
     }
-    public ShoppingCart getShoppingCart(Long userId){
+    public ShoppingCart getShoppingCart(long userId){
         ShoppingCart cart = shoppingCartRepository.findByUserId(userId);
         if (cart == null) {
             throw new IllegalArgumentException("Shopping cart not found for user ID: " + userId);
@@ -35,7 +35,7 @@ public class ShoppingCartServiceImpl {
         return cart;
     }
 
-    public ShoppingCartDTO getShoppingCartDTO(Long userId){
+    public ShoppingCartDTO getShoppingCartDTO(long userId){
         ShoppingCart cart = getShoppingCart(userId);
         return shoppingCartMapper.toShoppingCartDTO(cart);
     }
@@ -48,15 +48,16 @@ public class ShoppingCartServiceImpl {
         return product;
     }
 
-    public void addShoppingCart(Long userId){
+    public void addShoppingCart(long userId){
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userId));
 
         ShoppingCart cart = new ShoppingCart();
+        cart.setTotalPrice(0.0);
         cart.setUser(user);
         shoppingCartRepository.save(cart);
     }
-    public ShoppingCartDTO addProductToShoppingCart(Long userId, Long productId){
+    public ShoppingCartDTO addProductToShoppingCart(long userId, long productId){
         ShoppingCart cart = getShoppingCart(userId);
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new IllegalArgumentException("Product not found with ID: " + productId));
@@ -66,15 +67,16 @@ public class ShoppingCartServiceImpl {
         return shoppingCartMapper.toShoppingCartDTO(shoppingCartRepository.save(cart));
     }
 
-    public ShoppingCartDTO addProductToShoppingCart(Long userId, String productName, int quantity){
+    public ShoppingCartDTO addProductToShoppingCart(long userId, String productName, int quantity){
         ShoppingCart cart = getShoppingCart(userId);
         Product product = getProduct(productName);
         Map<Product, Integer> products = cart.getProducts();
+        cart.setTotalPrice(calculateTotal(product, quantity + products.getOrDefault(product, 0), products.getOrDefault(product, 0), cart.getTotalPrice()));
         products.put(product, products.getOrDefault(product, 0) + quantity);
         return shoppingCartMapper.toShoppingCartDTO(shoppingCartRepository.save(cart));
     }
 
-    public ShoppingCartDTO updateProductQuatityInShoppingCart(Long userId, String productName, int quantity){
+    public ShoppingCartDTO updateProductQuatityInShoppingCart(long userId, String productName, int quantity){
         if (quantity < 0) {
             throw new IllegalArgumentException("Quantity cannot be negative.");
         }
@@ -82,28 +84,40 @@ public class ShoppingCartServiceImpl {
         Product product = getProduct(productName);
         Map<Product, Integer> products = cart.getProducts();
         if (quantity == 0) {
+            cart.setTotalPrice(calculateTotal(product, 0, products.get(product), cart.getTotalPrice()));
             products.remove(product);
         } else {
+            cart.setTotalPrice(calculateTotal(product, quantity, products.getOrDefault(product, 0), cart.getTotalPrice()));
             products.put(product, quantity);
         }
         return shoppingCartMapper.toShoppingCartDTO(shoppingCartRepository.save(cart));
     }
 
 
-    public void removeProductFromShoppingCart(Long userId, String productName){
+    public void removeProductFromShoppingCart(long userId, String productName){
         ShoppingCart cart = getShoppingCart(userId);
         Product product = getProduct(productName);
         Map<Product, Integer> products = cart.getProducts();
-        if (products.remove(product) != null) {
-            shoppingCartRepository.save(cart);
-        }else{
+        Integer productQuantity = products.get(product);
+
+        if (productQuantity == null) {
             throw new IllegalArgumentException("Product not found in shopping cart.");
         }
+        cart.setTotalPrice(calculateTotal(product, 0, products.get(product), cart.getTotalPrice()));
+        products.remove(product);
+        shoppingCartRepository.save(cart);
     }
-    public void clearShoppingCart(Long userId){
+    public void clearShoppingCart(long userId){
         ShoppingCart cart = getShoppingCart(userId);
         cart.getProducts().clear();
+        cart.setTotalPrice(0.0);
         shoppingCartRepository.save(cart);
     }
 
+    public Double calculateTotal(Product product, int quantity, int quantityBefore, Double priceBefore){
+        if(quantity == 0){
+            return priceBefore - (product.getPrice() * quantityBefore);
+        }
+        return priceBefore + (product.getPrice() * (quantity - quantityBefore));
+    }
 }

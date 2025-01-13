@@ -5,8 +5,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 
-//bundles @ToString, @EqualsAndHashCode, @Getter / @Setter and @RequiredArgsConstructor
-@Data
+
+@Data //bundles @ToString, @EqualsAndHashCode, @Getter / @Setter and @RequiredArgsConstructor
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity

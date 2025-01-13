@@ -13,4 +13,5 @@ import java.util.Map;
 public class ShoppingCartDTO {
     private Long id;
     private Map<Product, Integer> products;
+    private Double totalPrice;
 }

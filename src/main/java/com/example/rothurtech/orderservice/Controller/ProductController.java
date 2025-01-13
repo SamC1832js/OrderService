@@ -5,6 +5,7 @@ import com.example.rothurtech.orderservice.Service.impl.ProductServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,7 +28,7 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<Product> addProduct(@RequestBody Product product) {
+    public ResponseEntity<Product> addProduct(@Validated @RequestBody Product product) {
         productServiceImpl.addProduct(product);
         return new ResponseEntity<>(product, HttpStatus.CREATED);
     }
