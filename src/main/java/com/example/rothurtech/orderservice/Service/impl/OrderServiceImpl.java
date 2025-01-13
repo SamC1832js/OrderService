@@ -1,9 +1,11 @@
 package com.example.rothurtech.orderservice.Service.impl;
 
+import com.example.rothurtech.orderservice.DTO.OrderDTO;
 import com.example.rothurtech.orderservice.Entity.Order;
 import com.example.rothurtech.orderservice.Entity.Product;
 import com.example.rothurtech.orderservice.Entity.ShoppingCart;
 import com.example.rothurtech.orderservice.Entity.User;
+import com.example.rothurtech.orderservice.Mapper.OrderMapper;
 import com.example.rothurtech.orderservice.Repository.OrderRepository;
 import com.example.rothurtech.orderservice.Repository.ShoppingCartRepository;
 import com.example.rothurtech.orderservice.Repository.UserRepository;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderServiceImpl {
@@ -19,22 +22,26 @@ public class OrderServiceImpl {
     private final ShoppingCartRepository shoppingCartRepository;
     private final UserRepository userRepository;
     private final ShoppingCartServiceImpl shoppingCartServiceImpl;
+    private final OrderMapper orderMapper;
 
     @Autowired
-    public OrderServiceImpl(OrderRepository orderRepository, ShoppingCartRepository shoppingCartRepository,UserRepository userRepository, ShoppingCartServiceImpl shoppingCartServiceImpl) {
+    public OrderServiceImpl(OrderRepository orderRepository, ShoppingCartRepository shoppingCartRepository,UserRepository userRepository, ShoppingCartServiceImpl shoppingCartServiceImpl, OrderMapper orderMapper) {
         this.orderRepository = orderRepository;
         this.shoppingCartRepository = shoppingCartRepository;
         this.userRepository = userRepository;
         this.shoppingCartServiceImpl = shoppingCartServiceImpl;
+        this.orderMapper = orderMapper;
     }
 
-    public List<Order> getAllOrders(Long userId){
-        Optional<List<Order>> op = Optional.ofNullable(orderRepository.findByUserId(userId));
-        return op.orElse(new ArrayList<>());
+    public List<OrderDTO> getAllOrders(Long userId){
+        List<Order> orders = orderRepository.findByUserId(userId);
+        return orders.stream()
+                .map(orderMapper::toOrderDTO)
+                .collect(Collectors.toList());
     }
 
 
-    public Order addOrder(Long userId){
+    public OrderDTO addOrder(Long userId){
         ShoppingCart shoppingCart = shoppingCartRepository.findByUserId(userId);
         if(shoppingCart == null){
             throw new IllegalArgumentException("Shopping cart not found for user ID: " + userId);
@@ -50,7 +57,7 @@ public class OrderServiceImpl {
         order.setDate(LocalDateTime.now());
         order.setTotalPrice(calculatePrice(products));
         shoppingCartServiceImpl.clearShoppingCart(userId);
-        return orderRepository.save(order);
+        return orderMapper.toOrderDTO(orderRepository.save(order));
     }
 
     public Double calculatePrice(Map<Product, Integer> cart){

@@ -4,8 +4,8 @@ import jakarta.validation.constraints.Email;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.List;
 
+//bundles @ToString, @EqualsAndHashCode, @Getter / @Setter and @RequiredArgsConstructor
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

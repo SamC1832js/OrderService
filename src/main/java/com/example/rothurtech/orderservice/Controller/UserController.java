@@ -1,5 +1,6 @@
 package com.example.rothurtech.orderservice.Controller;
 
+import com.example.rothurtech.orderservice.DTO.UserDTO;
 import com.example.rothurtech.orderservice.Entity.User;
 import com.example.rothurtech.orderservice.Service.impl.ShoppingCartServiceImpl;
 import com.example.rothurtech.orderservice.Service.impl.UserServiceImpl;
@@ -22,20 +23,20 @@ public class UserController {
 
     @PostMapping()
     public ResponseEntity<String> registerUser(@RequestBody User regUser) {
-        User user = userServiceImpl.addUser(regUser);
+        UserDTO user = userServiceImpl.addUser(regUser);
         shoppingCartServiceImpl.addShoppingCart(user.getId());
         return new ResponseEntity<>("Document user Id for later " + user.getId().toString(), HttpStatus.CREATED);
     }
 
     @GetMapping()
-    public ResponseEntity<User> getUser(@RequestParam(value = "email") String email, @RequestParam(value = "password") String password) {
-        User user = userServiceImpl.getUserByEmail(email, password);
+    public ResponseEntity<UserDTO> getUser(@RequestParam(value = "email") String email, @RequestParam(value = "password") String password) {
+        UserDTO user = userServiceImpl.getUserByEmail(email, password);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteUser(@RequestParam(value = "email") String email, @RequestParam(value = "password") String password) {
-        User user = userServiceImpl.getUserByEmail(email, password);
+        UserDTO user = userServiceImpl.getUserByEmail(email, password);
         userServiceImpl.deleteUser(user.getId());
         return new ResponseEntity<>("User has been deleted.", HttpStatus.NO_CONTENT);
     }

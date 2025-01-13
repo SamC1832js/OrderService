@@ -1,5 +1,6 @@
 package com.example.rothurtech.orderservice.Controller;
 
+import com.example.rothurtech.orderservice.DTO.ShoppingCartDTO;
 import com.example.rothurtech.orderservice.Entity.ShoppingCart;
 import com.example.rothurtech.orderservice.Service.impl.ShoppingCartServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,20 +20,20 @@ public class ShoppingCartController {
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<ShoppingCart> getShoppingCart(@PathVariable Long userId) {
-        ShoppingCart cart = shoppingCartServiceImpl.getShoppingCart(userId);
+    public ResponseEntity<ShoppingCartDTO> getShoppingCart(@PathVariable Long userId) {
+        ShoppingCartDTO cart = shoppingCartServiceImpl.getShoppingCartDTO(userId);
         return new ResponseEntity<>(cart, HttpStatus.OK);
     }
 
     @PostMapping("/{userId}")
-    public ResponseEntity<ShoppingCart> addProductToShoppingCart(@PathVariable Long userId, @RequestParam(value = "productname") String productName, @RequestParam(value = "quantity", required = false, defaultValue = "1")  Integer quantity) {
-        ShoppingCart cart = shoppingCartServiceImpl.addProductToShoppingCart(userId, productName, quantity);
+    public ResponseEntity<ShoppingCartDTO> addProductToShoppingCart(@PathVariable Long userId, @RequestParam(value = "productname") String productName, @RequestParam(value = "quantity", required = false, defaultValue = "1")  Integer quantity) {
+        ShoppingCartDTO cart = shoppingCartServiceImpl.addProductToShoppingCart(userId, productName, quantity);
         return new ResponseEntity<>(cart, HttpStatus.OK);
     }
 
     @PutMapping("/{userId}")
-    public ResponseEntity<ShoppingCart> updateShoppingCart(@PathVariable Long userId, @RequestParam(value = "productname") String productName, @RequestParam(value = "quantity")  Integer quantity) {
-        ShoppingCart cart = shoppingCartServiceImpl.updateProductQuatityInShoppingCart(userId, productName, quantity);
+    public ResponseEntity<ShoppingCartDTO> updateShoppingCart(@PathVariable Long userId, @RequestParam(value = "productname") String productName, @RequestParam(value = "quantity")  Integer quantity) {
+        ShoppingCartDTO cart = shoppingCartServiceImpl.updateProductQuatityInShoppingCart(userId, productName, quantity);
         return new ResponseEntity<>(cart, HttpStatus.OK);
     }
 
@@ -47,7 +48,4 @@ public class ShoppingCartController {
         shoppingCartServiceImpl.clearShoppingCart(userId);
         return new ResponseEntity<>("All products removed from your shopping cart.", HttpStatus.OK);
     }
-
-
-
 }

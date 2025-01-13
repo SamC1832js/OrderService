@@ -24,6 +24,8 @@ public class Order {
     @JoinColumn(name = "users_id", nullable = false)
     private User user;
 
+    //mark products embedded collection of elements that are not entities themselves.
+    //separate table
     @ElementCollection
     @CollectionTable(name = "order_products", joinColumns = @JoinColumn(name = "order_id"))
     @MapKeyColumn(name = "product_id")

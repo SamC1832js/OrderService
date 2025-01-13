@@ -5,6 +5,8 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.*;
 
+
+//No need DTO, product can be public
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -25,7 +27,5 @@ public class Product {
     @Max(Long.MAX_VALUE)
     @Column(nullable = false)
     private Double price;
-
-
 }
 
