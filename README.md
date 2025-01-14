@@ -159,9 +159,9 @@ The default server port is `8080`.
 - **Response:** `200 OK`
   - Returns a list of orders.
 
-#### **POST** - Create a Order
+#### **POST** - Create an Order
 - **Description:** Processes a new order using the products in the user's shopping cart, and remove all products from the shopping cart.
-- Shopping cart can not be empty, it must contain some product to create a order.
+- Shopping cart can not be empty, it must contain some product to create an order.
 - **URL:** `/api/orders/{userId}`
 - **Response:** `200 OK`
   - Returns the created order.
