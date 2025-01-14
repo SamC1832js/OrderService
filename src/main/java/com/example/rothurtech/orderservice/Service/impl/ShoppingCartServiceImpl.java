@@ -65,7 +65,6 @@ public class ShoppingCartServiceImpl {
         Map<Product, Integer> products = cart.getProducts();
         products.put(product, products.getOrDefault(product, 0) + 1);
         return shoppingCartMapper.toShoppingCartDTO(shoppingCartRepository.save(cart));
-        //s
     }
 
     public ShoppingCartDTO addProductToShoppingCart(long userId, String productName, int quantity){
