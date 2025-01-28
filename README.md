@@ -69,7 +69,7 @@ The default server port is `8080`.
   "price": 19.99,
   "category": "CPU",
   "brand" : "intel",
-  "imgurl" : "url"
+  "imgUrl" : "url"
 }
 ```
 - **Response:** `201 CREATED`
@@ -87,7 +87,7 @@ The default server port is `8080`.
   "price": 19.99,
   "category": "CPU",
   "brand" : "brand",
-  "imgurl" : "url"
+  "imgUrl" : "url"
 }
 ```
 - **Response:** `200 OK`
