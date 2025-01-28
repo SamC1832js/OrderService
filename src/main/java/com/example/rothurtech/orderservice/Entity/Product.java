@@ -27,5 +27,12 @@ public class Product {
     @DecimalMax(value = "999999999.99", message = "Price exceeds the maximum allowed")
     @Column(nullable = false)
     private Double price;
+
+    private String Category;
+
+    private String Brand;
+
+    private String imgUrl;
+
 }
 
