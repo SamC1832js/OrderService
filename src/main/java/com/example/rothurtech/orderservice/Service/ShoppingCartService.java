@@ -4,7 +4,7 @@ import com.example.rothurtech.orderservice.Entity.Product;
 import com.example.rothurtech.orderservice.Entity.ShoppingCart;
 import com.example.rothurtech.orderservice.Entity.User;
 
-public interface ShoppingCartService {
+public interface ShoppingCartService{
     ShoppingCart getShoppingCart(User user);
     ShoppingCart addProductToShoppingCart(ShoppingCart shoppingCart, Product product, int quantity);
     ShoppingCart updateProductToShoppingCart(ShoppingCart shoppingCart, Product product, int quantity);

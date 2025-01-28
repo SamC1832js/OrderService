@@ -8,6 +8,7 @@ import com.example.rothurtech.orderservice.Mapper.ShoppingCartMapper;
 import com.example.rothurtech.orderservice.Repository.ProductRepository;
 import com.example.rothurtech.orderservice.Repository.ShoppingCartRepository;
 import com.example.rothurtech.orderservice.Repository.UserRepository;
+import com.example.rothurtech.orderservice.Service.ShoppingCartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

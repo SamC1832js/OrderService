@@ -5,7 +5,7 @@ import com.example.rothurtech.orderservice.Entity.User;
 
 public interface UserService {
     public UserDTO getUserById(Long id);
-    public UserDTO getUserByEmail(String email);
+    public UserDTO getUserByEmail(String email, String password);
     public UserDTO addUser(User user);
     public void deleteUser(Long id);
 }
