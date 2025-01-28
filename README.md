@@ -66,7 +66,10 @@ The default server port is `8080`.
 {
   "name": "Product Name",
   "description": "Product Description",
-  "price": 19.99
+  "price": 19.99,
+  "category": "CPU",
+  "brand" : "intel",
+  "imgurl" : "url"
 }
 ```
 - **Response:** `201 CREATED`
@@ -79,9 +82,12 @@ The default server port is `8080`.
 - **Body:**
 ```json
 {
-  "name": "Updated Product Name",
-  "description": "Updated Description",
-  "price": 25.99
+  "name": "Product Name",
+  "description": "Product Description",
+  "price": 19.99,
+  "category": "CPU",
+  "brand" : "brand",
+  "imgurl" : "url"
 }
 ```
 - **Response:** `200 OK`
