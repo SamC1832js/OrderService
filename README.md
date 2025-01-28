@@ -75,7 +75,7 @@ The default server port is `8080`.
 - **Description:** Updates the details of an existing product.
 - **URL:** `/api/products`
 - **Query Parameter:**
-  - `productname` (required)
+  - `productName` (required)
 - **Body:**
 ```json
 {
@@ -90,7 +90,7 @@ The default server port is `8080`.
 - **Description:** Partially updates specific fields of a product.
 - **URL:** `/api/products`
 - **Query Parameter:**
-  - `productname` (required)
+  - `productName` (required)
 - **Body:**
 ```json
 {
@@ -104,7 +104,7 @@ The default server port is `8080`.
 - **Description:** Deletes a product by its name.
 - **URL:** `/api/products`
 - **Query Parameter:**
-  - `productname` (required)
+  - `productName` (required)
 - **Response:** `204 NO CONTENT`
 -   Product deleted successfully.
 ---
