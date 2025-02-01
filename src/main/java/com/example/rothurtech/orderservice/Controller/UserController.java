@@ -87,9 +87,9 @@ public class UserController {
         }
     }
 
-    @GetMapping()
-    public ResponseEntity<UserDTO> getUser(@RequestParam(value = "email") String email, @RequestParam(value = "password") String password) {
-        UserDTO user = userServiceImpl.getUserByEmail(email, password);
+    @GetMapping("/profile")
+    public ResponseEntity<UserDTO> getUser(HttpServletRequest request) {
+        UserDTO user = userServiceImpl.getCurrentUser(request);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 

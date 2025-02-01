@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class ProductServiceImpl {
@@ -15,6 +16,9 @@ public class ProductServiceImpl {
     @Autowired
     public ProductServiceImpl(ProductRepository productRepository) {
         this.productRepository = productRepository;
+    }
+    public Product getProduct(Long id){
+        return productRepository.findById(id).orElse(null);
     }
     public Product getProduct(String productName){
         Product product = productRepository.findByName(productName);

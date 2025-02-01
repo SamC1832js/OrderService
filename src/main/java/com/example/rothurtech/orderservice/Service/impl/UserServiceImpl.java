@@ -5,7 +5,10 @@ import com.example.rothurtech.orderservice.Entity.User;
 import com.example.rothurtech.orderservice.Mapper.UserMapper;
 import com.example.rothurtech.orderservice.Repository.UserRepository;
 import com.example.rothurtech.orderservice.Service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +29,13 @@ public class UserServiceImpl implements UserService {
         return userMapper.toUserDTO(userRepository.findById(id).orElse(null));
     }
 
+    public UserDTO getCurrentUser(HttpServletRequest request) {
+        // Get user email from JWT token in SecurityContext
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        User user =  getUserByEmailAuth(email);
+        return userMapper.toUserDTO(user);
+    }
 
     public UserDTO getUserByEmail(String email, String password){
         User user = userRepository.findByEmail(email);
@@ -48,6 +58,8 @@ public class UserServiceImpl implements UserService {
     public User getUserByEmailAuth(String email){
         return userRepository.findByEmail(email);
     }
+
+
     public UserDTO addUser(User user){
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userMapper.toUserDTO(userRepository.save(user));

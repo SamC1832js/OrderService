@@ -1,11 +1,17 @@
 package com.example.rothurtech.orderservice.Controller;
 
+import com.example.rothurtech.orderservice.DTO.CartItemRequestDTO;
 import com.example.rothurtech.orderservice.DTO.ShoppingCartDTO;
 import com.example.rothurtech.orderservice.Entity.ShoppingCart;
+import com.example.rothurtech.orderservice.Entity.User;
 import com.example.rothurtech.orderservice.Service.impl.ShoppingCartServiceImpl;
+import com.example.rothurtech.orderservice.Service.impl.UserServiceImpl;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -13,39 +19,56 @@ import org.springframework.web.bind.annotation.*;
 public class ShoppingCartController {
 
     private final ShoppingCartServiceImpl shoppingCartServiceImpl;
+    private final UserServiceImpl userServiceImpl;
 
     @Autowired
-    public ShoppingCartController(ShoppingCartServiceImpl shoppingCartServiceImpl) {
+    public ShoppingCartController(ShoppingCartServiceImpl shoppingCartServiceImpl, UserServiceImpl userServiceImpl) {
         this.shoppingCartServiceImpl = shoppingCartServiceImpl;
+        this.userServiceImpl = userServiceImpl;
     }
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<ShoppingCartDTO> getShoppingCart(@PathVariable Long userId) {
-        ShoppingCartDTO cart = shoppingCartServiceImpl.getShoppingCartDTO(userId);
+    private User getCurrentUser(HttpServletRequest request) {
+        // Get user email from JWT token in SecurityContext
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        User user =  userServiceImpl.getUserByEmailAuth(email);
+        System.out.println(email);
+        return user;
+    }
+
+    @GetMapping()
+    public ResponseEntity<ShoppingCartDTO> getShoppingCart(HttpServletRequest request) {
+        User currentUser = getCurrentUser(request);
+        ShoppingCartDTO cart = shoppingCartServiceImpl.getShoppingCartDTO(currentUser.getId());
+        System.out.println(cart);
         return new ResponseEntity<>(cart, HttpStatus.OK);
     }
 
-    @PostMapping("/{userId}")
-    public ResponseEntity<ShoppingCartDTO> addProductToShoppingCart(@PathVariable Long userId, @RequestParam(value = "productname") String productName, @RequestParam(value = "quantity", required = false, defaultValue = "1")  Integer quantity) {
-        ShoppingCartDTO cart = shoppingCartServiceImpl.addProductToShoppingCart(userId, productName, quantity);
+    @PostMapping()
+    public ResponseEntity<ShoppingCartDTO> addProductToShoppingCart(HttpServletRequest request, @RequestBody CartItemRequestDTO cartItem) {
+        User currentUser = getCurrentUser(request);
+        ShoppingCartDTO cart = shoppingCartServiceImpl.addProductToShoppingCart(currentUser.getId(), cartItem.getProductName(), cartItem.getQuantity());
         return new ResponseEntity<>(cart, HttpStatus.OK);
     }
 
-    @PutMapping("/{userId}")
-    public ResponseEntity<ShoppingCartDTO> updateShoppingCart(@PathVariable Long userId, @RequestParam(value = "productname") String productName, @RequestParam(value = "quantity")  Integer quantity) {
-        ShoppingCartDTO cart = shoppingCartServiceImpl.updateProductQuatityInShoppingCart(userId, productName, quantity);
+    @PutMapping()
+    public ResponseEntity<ShoppingCartDTO> updateShoppingCart(HttpServletRequest request, @RequestBody CartItemRequestDTO cartItem) {
+        User currentUser = getCurrentUser(request);
+        ShoppingCartDTO cart = shoppingCartServiceImpl.updateProductQuatityInShoppingCart(currentUser.getId(), cartItem.getProductName(), cartItem.getQuantity());
         return new ResponseEntity<>(cart, HttpStatus.OK);
     }
 
-    @DeleteMapping("/{userId}")
-    public ResponseEntity<String> removeProductFromShoppingCart(@PathVariable Long userId, @RequestParam(value = "productname") String productName) {
-        shoppingCartServiceImpl.removeProductFromShoppingCart(userId, productName);
-        return new ResponseEntity<>("Product removed from your shopping cart.", HttpStatus.OK);
+    @DeleteMapping()
+    public ResponseEntity<ShoppingCartDTO> removeProductFromShoppingCart(HttpServletRequest request, @RequestParam String productName) {
+        User currentUser = getCurrentUser(request);
+        ShoppingCartDTO cart = shoppingCartServiceImpl.removeProductFromShoppingCart(currentUser.getId(), productName);
+        return new ResponseEntity<>(cart, HttpStatus.OK);
     }
 
-    @DeleteMapping("/{userId}/clear")
-    public ResponseEntity<String> clearShoppingCart(@PathVariable Long userId) {
-        shoppingCartServiceImpl.clearShoppingCart(userId);
-        return new ResponseEntity<>("All products removed from your shopping cart.", HttpStatus.OK);
+    @DeleteMapping("/clear")
+    public ResponseEntity<ShoppingCartDTO> clearShoppingCart(HttpServletRequest request) {
+        User currentUser = getCurrentUser(request);
+        ShoppingCartDTO cart = shoppingCartServiceImpl.clearShoppingCart(currentUser.getId());
+        return new ResponseEntity<>(cart, HttpStatus.OK);
     }
 }

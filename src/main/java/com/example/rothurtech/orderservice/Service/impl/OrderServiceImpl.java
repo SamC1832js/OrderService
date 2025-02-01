@@ -60,6 +60,10 @@ public class OrderServiceImpl {
         return orderMapper.toOrderDTO(orderRepository.save(order));
     }
 
+    public OrderDTO getOrderById(Long userId, Long id) {
+        return orderMapper.toOrderDTO(orderRepository.findById(id).orElse(null));
+    }
+
 //    public Double calculatePrice(Map<Product, Integer> cart){
 //        double totalPrice = 0D;
 //        for (Map.Entry<Product, Integer> entry : cart.entrySet()) {

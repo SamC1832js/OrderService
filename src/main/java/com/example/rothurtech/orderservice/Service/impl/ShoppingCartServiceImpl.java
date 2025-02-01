@@ -12,6 +12,7 @@ import com.example.rothurtech.orderservice.Service.ShoppingCartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Service
@@ -30,6 +31,7 @@ public class ShoppingCartServiceImpl {
     }
     public ShoppingCart getShoppingCart(long userId){
         ShoppingCart cart = shoppingCartRepository.findByUserId(userId);
+        System.out.println(cart);
         if (cart == null) {
             throw new IllegalArgumentException("Shopping cart not found for user ID: " + userId);
         }
@@ -95,7 +97,7 @@ public class ShoppingCartServiceImpl {
     }
 
 
-    public void removeProductFromShoppingCart(long userId, String productName){
+    public ShoppingCartDTO removeProductFromShoppingCart(long userId, String productName){
         ShoppingCart cart = getShoppingCart(userId);
         Product product = getProduct(productName);
         Map<Product, Integer> products = cart.getProducts();
@@ -106,13 +108,17 @@ public class ShoppingCartServiceImpl {
         }
         cart.setTotalPrice(calculateTotal(product, 0, products.get(product), cart.getTotalPrice()));
         products.remove(product);
-        shoppingCartRepository.save(cart);
+        if (products.isEmpty()) {
+            cart.setProducts(new HashMap<>());
+            cart.setTotalPrice(0.0);
+        }
+        return shoppingCartMapper.toShoppingCartDTO(shoppingCartRepository.save(cart));
     }
-    public void clearShoppingCart(long userId){
+    public ShoppingCartDTO clearShoppingCart(long userId){
         ShoppingCart cart = getShoppingCart(userId);
         cart.getProducts().clear();
         cart.setTotalPrice(0.0);
-        shoppingCartRepository.save(cart);
+        return shoppingCartMapper.toShoppingCartDTO (shoppingCartRepository.save(cart));
     }
 
     public Double calculateTotal(Product product, int quantity, int quantityBefore, Double priceBefore){
