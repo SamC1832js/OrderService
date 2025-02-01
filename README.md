@@ -1,196 +1,228 @@
-# REST API Documentation
+# API Documentation
 
-This document outlines the available API endpoints for the project. The application can be deployed using Spring Boot and currently does not have security measures implemented. Future enhancements will include JWT token-based authorization.
-
----
-
-## **Base URL**
+## Base URL
 ```
 http://localhost:8080
 ```
-The default server port is `8080`.
 
----
+## Authentication
+The API uses JWT (JSON Web Token) for authentication. Most endpoints require a valid JWT token in the Authorization header.
 
-## **User API**
-### **Endpoint:** `/api/users`
+Token expiration: 2 hours (7200000 milliseconds)
 
-#### **POST** - Register a New User
-- **Description:** Registers a new user and creates a shopping cart for the user.
-- **URL:** `/api/users`
-- **Body:**
+Format: `Authorization: Bearer <token>`
+
+## Endpoints
+
+### User API
+Base path: `/api/users`
+
+#### Register User
+- **Method:** POST
+- **Path:** `/api/users/register`
+- **Description:** Registers a new user and creates an associated shopping cart
+- **Authentication:** Not required
+- **Request Body:**
 ```json
 {
-  "firstName": "first",
-  "lastName": "last",
-  "email": "example@example.com",
-  "password": "password123"
+  "firstName": "string",
+  "lastName": "string",
+  "email": "string",
+  "password": "string"
 }
 ```
-- **Response:** `201 CREATED`
-  - Returns the newly created user ID.
+- **Response:** 201 CREATED
+  - Message: "User registered successfully."
 
-#### **GET** - Get User Information
-- **Description:** Retrieves user information using email and password.
-- **URL:** `/api/users`
-- **Query Parameters:**
-  - `email` (required)
-  - `password` (required)
-- **Response:** `200 OK`
-  - Returns the user details.
-
-#### **DELETE** - Delete a User
-- **Description:** Deletes a user from the database.
-- **URL:** `/api/users/{id}`
-- **Query Parameters:**
-  - `email` (required)
-  - `password` (required)
-- **Response:** `204 NO CONTENT`
-  -   User has been deleted.
----
-
-## **Product API**
-### **Endpoint:** `/api/products`
-
-#### **GET** - Get All Products
-- **Description:** Retrieves a list of all available products.
-- **URL:** `/api/products`
-- **Response:** `200 OK`
-  - Returns a list of products.
-
-#### **POST** - Add a New Product
-- **Description:** Adds a new product to the database.
-- **URL:** `/api/products`
-- **Body:**
+#### Login User
+- **Method:** POST
+- **Path:** `/api/users/login`
+- **Description:** Authenticates user and returns JWT token
+- **Authentication:** Not required
+- **Request Body:**
 ```json
 {
-  "name": "Product Name",
-  "description": "Product Description",
-  "price": 19.99,
-  "category": "CPU",
-  "brand" : "intel",
-  "imgUrl" : "url"
+  "email": "string",
+  "password": "string"
 }
 ```
-- **Response:** `201 CREATED`
-
-#### **PUT** - Update an Existing Product
-- **Description:** Updates the details of an existing product.
-- **URL:** `/api/products`
-- **Query Parameter:**
-  - `productName` (required)
-- **Body:**
+- **Response:** 200 OK
 ```json
 {
-  "name": "Product Name",
-  "description": "Product Description",
-  "price": 19.99,
-  "category": "CPU",
-  "brand" : "brand",
-  "imgUrl" : "url"
+  "token": "string"
 }
 ```
-- **Response:** `200 OK`
 
-#### **PATCH** - Partially Update a Product
-- **Description:** Partially updates specific fields of a product.
-- **URL:** `/api/products`
-- **Query Parameter:**
-  - `productName` (required)
-- **Body:**
+#### Validate Token
+- **Method:** GET
+- **Path:** `/api/users/validateToken`
+- **Description:** Validates if the current JWT token is valid
+- **Authentication:** Required
+- **Response:** 200 OK if valid, 401 UNAUTHORIZED if invalid
+
+### Product API
+Base path: `/api/products`
+
+#### Get All Products
+- **Method:** GET
+- **Path:** `/api/products`
+- **Description:** Retrieves all available products
+- **Authentication:** Not required
+- **Response:** 200 OK
+  - Returns array of products
+
+#### Get Product by ID
+- **Method:** GET
+- **Path:** `/api/products/{id}`
+- **Description:** Retrieves a specific product by ID
+- **Authentication:** Not required
+- **Response:** 200 OK
+  - Returns product details
+
+#### Add Product
+- **Method:** POST
+- **Path:** `/api/products`
+- **Description:** Creates a new product
+- **Authentication:** Required
+- **Request Body:**
 ```json
 {
-  "description": "New Description",
-  "price": 29.99
+  "name": "string",
+  "description": "string",
+  "price": number,
+  "category": "string",
+  "brand": "string",
+  "imgUrl": "string"
 }
 ```
-- **Response:** `200 OK`
+- **Response:** 201 CREATED
+  - Returns created product
 
-#### **DELETE** - Delete a Product
-- **Description:** Deletes a product by its name.
-- **URL:** `/api/products`
-- **Query Parameter:**
-  - `productName` (required)
-- **Response:** `204 NO CONTENT`
--   Product deleted successfully.
----
+#### Update Product
+- **Method:** PUT
+- **Path:** `/api/products`
+- **Query Parameters:** 
+  - `productName` (required): Name of product to update
+- **Description:** Updates all fields of an existing product
+- **Authentication:** Required
+- **Request Body:** Same as Add Product
+- **Response:** 200 OK
+  - Returns updated product
 
-## **Shopping Cart API**
-### **Endpoint:** `/api/shoppingcart`
-
-#### **GET** - Get Shopping Cart by User ID
-- **Description:** Retrieves the shopping cart of a specific user.
-- **URL:** `/api/shoppingcart/{userId}`
-- **Response:** `200 OK`
-
-#### **POST** - Add Product to Shopping Cart
-- **Description:** Adds a product to a user's shopping cart.
-- **URL:** `/api/shoppingcart/{userId}`
+#### Partial Update Product
+- **Method:** PATCH
+- **Path:** `/api/products`
 - **Query Parameters:**
-  - `productname` (required)
-  - `quantity` (optional, default is 1)
-- **Response:** `200 OK`
+  - `productName` (required): Name of product to update
+- **Description:** Updates specific fields of a product
+- **Authentication:** Required
+- **Request Body:** Only include fields to update
+```json
+{
+  "description": "string",
+  "price": number
+}
+```
+- **Response:** 200 OK
+  - Returns updated product
 
-#### **PUT** - Update Product Quantity in Shopping Cart
-- **Description:** Updates the quantity of a specific product in the user's shopping cart.
-- **URL:** `/api/shoppingcart/{userId}`
+#### Delete Product
+- **Method:** DELETE
+- **Path:** `/api/products`
 - **Query Parameters:**
-  - `productname` (required)
-  - `quantity` (required)
-- **Response:** `200 OK`
-  - If quantity is `0`, the product will be removed from the cart.
+  - `productName` (required): Name of product to delete
+- **Description:** Removes a product from the system
+- **Authentication:** Required
+- **Response:** 204 NO CONTENT
 
-#### **DELETE** - Remove Product from Shopping Cart
-- **Description:** Remove a specific product in the user's shopping cart.
-- **URL:** `/api/shoppingcart/{userId}`
+### Shopping Cart API
+Base path: `/api/shoppingcart`
+
+#### Get Shopping Cart
+- **Method:** GET
+- **Path:** `/api/shoppingcart`
+- **Description:** Retrieves current user's shopping cart
+- **Authentication:** Required
+- **Response:** 200 OK
+  - Returns shopping cart details
+
+#### Add Product to Cart
+- **Method:** POST
+- **Path:** `/api/shoppingcart`
+- **Description:** Adds a product to user's cart
+- **Authentication:** Required
+- **Request Body:**
+```json
+{
+  "productName": "string",
+  "quantity": number
+}
+```
+- **Response:** 200 OK
+  - Returns updated cart
+
+#### Update Product Quantity
+- **Method:** PUT
+- **Path:** `/api/shoppingcart`
+- **Description:** Updates product quantity in cart
+- **Authentication:** Required
+- **Request Body:** Same as Add Product to Cart
+- **Response:** 200 OK
+  - Returns updated cart
+
+#### Remove Product from Cart
+- **Method:** DELETE
+- **Path:** `/api/shoppingcart`
 - **Query Parameters:**
-  - `productname` (required)
-- **Response:** `200 OK`
-  -  Product removed from your shopping cart.
+  - `productName` (required): Product to remove
+- **Description:** Removes a product from cart
+- **Authentication:** Required
+- **Response:** 200 OK
 
-#### **DELETE** - Clear Shopping Cart
-- **Description:** Clears all items from the user's shopping cart.
-- **URL:** `/api/shoppingcart/{userId}/clear`
-- **Response:** `200 OK`
-  -   All products removed from your shopping cart.
+#### Clear Cart
+- **Method:** DELETE
+- **Path:** `/api/shoppingcart/clear`
+- **Description:** Removes all items from cart
+- **Authentication:** Required
+- **Response:** 200 OK
 
----
+### Order API
+Base path: `/api/orders`
 
-## **Order API**
-### **Endpoint:** `/api/orders`
+#### Get All Orders
+- **Method:** GET
+- **Path:** `/api/orders`
+- **Description:** Retrieves all orders for current user
+- **Authentication:** Required
+- **Response:** 200 OK
+  - Returns array of orders
 
-#### **GET** - Get Orders by User ID
-- **Description:** Retrieves all orders associated with a specific user.
-- **URL:** `/api/orders/{userId}`
-- **Response:** `200 OK`
-  - Returns a list of orders.
+#### Get Order by ID
+- **Method:** GET
+- **Path:** `/api/orders/{id}`
+- **Description:** Retrieves specific order details
+- **Authentication:** Required
+- **Response:** 200 OK
+  - Returns order details
 
-#### **POST** - Create an Order
-- **Description:** Processes a new order using the products in the user's shopping cart, and remove all products from the shopping cart.
-- Shopping cart can not be empty, it must contain some product to create an order.
-- **URL:** `/api/orders/{userId}`
-- **Response:** `200 OK`
-  - Returns the created order.
+#### Create Order
+- **Method:** POST
+- **Path:** `/api/orders`
+- **Description:** Creates a new order from current shopping cart contents
+- **Authentication:** Required
+- **Response:** 200 OK
+  - Returns created order details
 
----
+## Error Responses
+- 400 Bad Request - Invalid input
+- 401 Unauthorized - Missing or invalid authentication
+- 403 Forbidden - Insufficient permissions
+- 404 Not Found - Resource not found
+- 500 Internal Server Error - Server error
 
-## **Error Handling**
-The API returns standard HTTP status codes to indicate the success or failure of requests:
-- `200 OK` - Request was successful.
-- `201 CREATED` - Resource was created successfully.
-- `204 NO CONTENT` - Request was successful, but there is no content to return.
-- `404 NOT FOUND` - The requested resource was not found.
-- `400 BAD REQUEST` - The request was invalid or missing parameters.
-
----
-
-## **Future Enhancements**
-- Implement JWT token-based authorization for secure access to the APIs.
-- Add validation and error messages for better user feedback.
-
----
-
-## **Notes**
-- The application does not have any security measures implemented yet. Use caution when deploying to a public environment.
-- Ensure that the database is properly set up before making API calls.
-
+## CORS Configuration
+The API allows requests from:
+- Origin: `http://localhost:4200`
+- Methods: GET, POST, PUT, DELETE, OPTIONS
+- Headers: All allowed
+- Credentials: Allowed
