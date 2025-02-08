@@ -13,4 +13,6 @@ WORKDIR /app
 # Copy the JAR from the build stage
 ARG JAR_FILE=/app/target/OrderService-*.jar
 COPY --from=build ${JAR_FILE} app.jar
+EXPOSE 8080
 # Use the default Spring Boot entrypoint
+ENTRYPOINT ["java", "-jar", "app.jar"]
